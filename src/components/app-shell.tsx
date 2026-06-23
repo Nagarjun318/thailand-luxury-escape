@@ -25,7 +25,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   setDisplayTimeZone(timeZone);
 
   return (
-    <div className="min-h-screen lg:flex">
+    <div className="min-h-screen overflow-x-hidden lg:flex">
       {/* Desktop sidebar */}
       <aside className="sticky top-0 hidden h-screen w-64 shrink-0 flex-col border-r border-white/[0.06] bg-black/30 px-3 py-6 backdrop-blur-xl lg:flex">
         <Link href="/" className="mb-8 flex items-center gap-3 px-3">

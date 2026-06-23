@@ -32,6 +32,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
 import { Modal } from "@/components/ui/drawer";
 import { QRCode } from "@/components/qr-code";
+import { PdfViewer } from "@/components/pdf-viewer";
 import { TransportBadge, transportInfo } from "@/components/transport";
 import {
   getCurrentAndNext,
@@ -505,33 +506,9 @@ function TicketAccess({
           open={pdfOpen}
           onClose={() => setPdfOpen(false)}
           url={ticket.pdfUrl}
-          title={title}
         />
       )}
     </>
-  );
-}
-
-function PdfViewer({
-  open,
-  onClose,
-  url,
-  title,
-}: {
-  open: boolean;
-  onClose: () => void;
-  url: string;
-  title: string;
-}) {
-  return (
-    <Modal open={open} onClose={onClose} title={title} className="max-w-3xl h-[85vh]">
-      <iframe
-        src={url}
-        title={`${title} PDF`}
-        className="h-full w-full rounded-xl border border-white/10"
-        style={{ minHeight: "calc(85vh - 80px)" }}
-      />
-    </Modal>
   );
 }
 

@@ -34,9 +34,20 @@ export function Drawer({
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+
+    // Push a history entry so the mobile back gesture closes the drawer
+    // instead of navigating the page behind it.
+    history.pushState({ drawer: true }, "");
+    const onPop = () => onClose();
+    window.addEventListener("popstate", onPop);
+
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      window.removeEventListener("popstate", onPop);
+      // If the drawer is closing programmatically (not via back gesture),
+      // pop the history entry we pushed.
+      if (history.state?.drawer) history.back();
     };
   }, [open, onClose]);
 
@@ -115,7 +126,16 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+
+    history.pushState({ modal: true }, "");
+    const onPop = () => onClose();
+    window.addEventListener("popstate", onPop);
+
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("popstate", onPop);
+      if (history.state?.modal) history.back();
+    };
   }, [open, onClose]);
 
   if (!mounted) return null;

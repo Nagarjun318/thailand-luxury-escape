@@ -48,10 +48,12 @@
 
   html {
     scroll-behavior: smooth;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
+    overflow-x: hidden;
     background-image:
       radial-gradient(circle at 15% 10%, rgba(212, 175, 55, 0.08), transparent 35%),
       radial-gradient(circle at 85% 0%, rgba(212, 175, 55, 0.06), transparent 30%),
