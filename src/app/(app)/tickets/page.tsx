@@ -106,36 +106,36 @@ export default function TicketsPage() {
                 transition={{ delay: i * 0.05 }}
                 whileHover={{ y: -3 }}
                 onClick={() => setActive(ticket)}
-                className="text-left"
+                className="w-full text-left"
               >
                 <Card className="relative overflow-hidden p-0">
                   {/* perforation accents */}
                   <span className="absolute left-0 top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
                   <span className="absolute right-0 top-1/2 size-4 translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
-                  <div className="flex items-center gap-3 p-4">
-                    <div className="flex size-11 shrink-0 items-center justify-center rounded-xl glass-gold">
+                  <div className="flex items-center gap-2 p-3 sm:gap-3 sm:p-4">
+                    <div className="flex size-10 shrink-0 items-center justify-center rounded-xl glass-gold sm:size-11">
                       <Icon className="size-5 text-gold-300" />
                     </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center justify-between gap-2">
+                    <div className="min-w-0 flex-1 overflow-hidden">
+                      <div className="flex items-center justify-between gap-1">
                         <p className="truncate font-serif text-sm font-semibold">
                           {ticket.title}
                         </p>
-                        <Badge variant={STATUS_VARIANT[ticket.status]}>
+                        <Badge variant={STATUS_VARIANT[ticket.status]} className="shrink-0 text-[10px] px-1.5">
                           {ticket.status}
                         </Badge>
                       </div>
-                      <p className="mt-0.5 text-xs text-muted-foreground">
+                      <p className="mt-0.5 truncate text-xs text-muted-foreground">
                         #{ticket.bookingNumber} · {formatDate(ticket.date)}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between border-t border-dashed border-white/10 px-4 py-2.5 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1">
-                      <User className="size-3.5 text-gold-400" />
-                      {ticket.passenger}
+                  <div className="flex items-center justify-between border-t border-dashed border-white/10 px-3 py-2 text-xs text-muted-foreground sm:px-4 sm:py-2.5">
+                    <span className="inline-flex items-center gap-1 truncate">
+                      <User className="size-3.5 shrink-0 text-gold-400" />
+                      <span className="truncate">{ticket.passenger}</span>
                     </span>
-                    <span className="inline-flex items-center gap-1 text-gold-300">
+                    <span className="inline-flex shrink-0 items-center gap-1 text-gold-300">
                       <QrCode className="size-3.5" /> View
                       <ChevronRight className="size-3.5" />
                     </span>
