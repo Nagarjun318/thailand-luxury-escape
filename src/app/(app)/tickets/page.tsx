@@ -110,8 +110,8 @@ export default function TicketsPage() {
               >
                 <Card className="relative overflow-hidden p-0">
                   {/* perforation accents */}
-                  <span className="absolute -left-2 top-1/2 size-4 -translate-y-1/2 rounded-full bg-background" />
-                  <span className="absolute -right-2 top-1/2 size-4 -translate-y-1/2 rounded-full bg-background" />
+                  <span className="absolute left-0 top-1/2 size-4 -translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
+                  <span className="absolute right-0 top-1/2 size-4 translate-x-1/2 -translate-y-1/2 rounded-full bg-background" />
                   <div className="flex items-center gap-3 p-4">
                     <div className="flex size-11 shrink-0 items-center justify-center rounded-xl glass-gold">
                       <Icon className="size-5 text-gold-300" />

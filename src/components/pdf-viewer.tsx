@@ -192,10 +192,9 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
             onTouchMove={onTouchMove}
           >
             <div
-              className="origin-top-left space-y-3 p-2 transition-transform duration-150"
+              className="space-y-3 p-2"
               style={{
-                transform: `scale(${scale})`,
-                width: `${100 / scale}%`,
+                width: `${scale * 100}%`,
               }}
             >
               {pages.map((src, i) => (
