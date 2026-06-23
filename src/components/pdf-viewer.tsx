@@ -157,13 +157,58 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
             : "flex flex-col"
         }
       >
-        {/* iOS: use native PDF rendering via iframe */}
+        {/* iOS: use native PDF rendering via iframe with zoom controls */}
         {isIOS && url && (
-          <iframe
-            src={url}
-            title="Ticket PDF"
-            className="h-[70vh] w-full rounded-lg border border-white/10"
-          />
+          <>
+            <div className="flex items-center justify-between gap-2 border-b border-white/10 bg-[#0d0d0f]/90 px-3 py-2 backdrop-blur-sm">
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={zoomOut}
+                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                  aria-label="Zoom out"
+                >
+                  <ZoomOut className="size-4" />
+                </button>
+                <span className="min-w-[3rem] text-center text-xs font-medium text-muted-foreground">
+                  {Math.round(scale * 100)}%
+                </span>
+                <button
+                  onClick={zoomIn}
+                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                  aria-label="Zoom in"
+                >
+                  <ZoomIn className="size-4" />
+                </button>
+                <button
+                  onClick={resetZoom}
+                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                  aria-label="Reset zoom"
+                >
+                  <RotateCcw className="size-3.5" />
+                </button>
+              </div>
+              <button
+                onClick={toggleFullscreen}
+                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+                aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+              >
+                {isFullscreen ? <Minimize className="size-4" /> : <Maximize className="size-4" />}
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto" style={{ minHeight: isFullscreen ? "calc(100vh - 50px)" : "70vh" }}>
+              <iframe
+                src={url}
+                title="Ticket PDF"
+                className="border-0"
+                style={{
+                  width: `${scale * 100}%`,
+                  height: `${scale * 100}%`,
+                  minHeight: isFullscreen ? "calc(100vh - 50px)" : "70vh",
+                  transformOrigin: "top left",
+                }}
+              />
+            </div>
+          </>
         )}
 
         {/* Non-iOS: toolbar + canvas-rendered pages */}
