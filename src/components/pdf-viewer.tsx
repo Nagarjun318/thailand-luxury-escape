@@ -107,9 +107,8 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
         const loadingTask = pdfjsLib.getDocument({
           data: new Uint8Array(buffer),
           useWorkerFetch: false,
-          isEvalSupported: false,
           useSystemFonts: true,
-        });
+        } as any);
         const pdf = await loadingTask.promise;
         const rendered: string[] = [];
 
