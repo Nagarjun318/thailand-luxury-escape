@@ -46,7 +46,16 @@ export function TimeMachine() {
     <div className="fixed bottom-20 left-3 z-50 md:bottom-4">
       <AnimatePresence>
         {open && (
-          <motion.div
+          <>
+            {/* Invisible backdrop to catch outside taps */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[-1]"
+              onClick={() => setOpen(false)}
+            />
+            <motion.div
             initial={{ opacity: 0, y: 12, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
@@ -155,6 +164,7 @@ export function TimeMachine() {
               </div>
             </div>
           </motion.div>
+          </>
         )}
       </AnimatePresence>
 

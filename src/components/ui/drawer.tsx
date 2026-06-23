@@ -6,6 +6,45 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+let overlayCounter = 0;
+
+/**
+ * Hook that integrates an overlay (drawer/modal) with the browser history
+ * so that the mobile back-swipe gesture closes the overlay instead of
+ * navigating the page behind it.
+ */
+function useBackClose(open: boolean, onClose: () => void) {
+  const idRef = React.useRef<string>("");
+  const closedByPopRef = React.useRef(false);
+
+  React.useEffect(() => {
+    if (!open) return;
+
+    // Generate a unique marker for this overlay instance.
+    const id = `overlay-${++overlayCounter}`;
+    idRef.current = id;
+    closedByPopRef.current = false;
+
+    history.pushState({ overlayId: id }, "");
+
+    const onPop = () => {
+      // Only react if our own entry was popped (or we're still the top overlay).
+      closedByPopRef.current = true;
+      onClose();
+    };
+    window.addEventListener("popstate", onPop);
+
+    return () => {
+      window.removeEventListener("popstate", onPop);
+
+      // If closed programmatically (not by back gesture), remove our history entry.
+      if (!closedByPopRef.current && history.state?.overlayId === id) {
+        history.back();
+      }
+    };
+  }, [open, onClose]);
+}
+
 interface DrawerProps {
   open: boolean;
   onClose: () => void;
@@ -29,25 +68,16 @@ export function Drawer({
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
+  useBackClose(open, onClose);
+
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
-
-    // Push a history entry so the mobile back gesture closes the drawer
-    // instead of navigating the page behind it.
-    history.pushState({ drawer: true }, "");
-    const onPop = () => onClose();
-    window.addEventListener("popstate", onPop);
-
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
-      window.removeEventListener("popstate", onPop);
-      // If the drawer is closing programmatically (not via back gesture),
-      // pop the history entry we pushed.
-      if (history.state?.drawer) history.back();
     };
   }, [open, onClose]);
 
@@ -122,20 +152,13 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
   const [mounted, setMounted] = React.useState(false);
   React.useEffect(() => setMounted(true), []);
 
+  useBackClose(open, onClose);
+
   React.useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     document.addEventListener("keydown", onKey);
-
-    history.pushState({ modal: true }, "");
-    const onPop = () => onClose();
-    window.addEventListener("popstate", onPop);
-
-    return () => {
-      document.removeEventListener("keydown", onKey);
-      window.removeEventListener("popstate", onPop);
-      if (history.state?.modal) history.back();
-    };
+    return () => document.removeEventListener("keydown", onKey);
   }, [open, onClose]);
 
   if (!mounted) return null;
