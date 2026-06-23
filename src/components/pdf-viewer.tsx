@@ -1,7 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { Loader2, ZoomIn, ZoomOut, Maximize, Minimize, RotateCcw } from "lucide-react";
+import { createPortal } from "react-dom";
+import { Loader2, ZoomIn, ZoomOut, Maximize, Minimize, RotateCcw, X } from "lucide-react";
 import { Drawer } from "./ui/drawer";
 
 interface PdfViewerProps {
@@ -147,131 +148,156 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
     };
   }, [open, url, isIOS]);
 
-  return (
-    <Drawer open={open} onClose={isFullscreen ? () => {} : onClose} title="Ticket PDF">
-      <div
-        ref={containerRef}
-        className={
-          isFullscreen && !document.fullscreenElement
-            ? "fixed inset-0 z-[200] flex flex-col bg-[#0d0d0f]"
-            : "flex flex-col"
-        }
+  const toolbar = (
+    <div className="flex items-center justify-between gap-2 border-b border-white/10 bg-[#0d0d0f]/90 px-3 py-2 backdrop-blur-sm">
+      <div className="flex items-center gap-1">
+        <button
+          onClick={zoomOut}
+          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+          aria-label="Zoom out"
+        >
+          <ZoomOut className="size-4" />
+        </button>
+        <span className="min-w-[3rem] text-center text-xs font-medium text-muted-foreground">
+          {Math.round(scale * 100)}%
+        </span>
+        <button
+          onClick={zoomIn}
+          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+          aria-label="Zoom in"
+        >
+          <ZoomIn className="size-4" />
+        </button>
+        <button
+          onClick={resetZoom}
+          className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+          aria-label="Reset zoom"
+        >
+          <RotateCcw className="size-3.5" />
+        </button>
+      </div>
+      <button
+        onClick={toggleFullscreen}
+        className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+        aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
       >
-        {/* iOS: use native PDF rendering via iframe with zoom controls */}
-        {isIOS && url && (
-          <>
-            <div className="flex items-center justify-between gap-2 border-b border-white/10 bg-[#0d0d0f]/90 px-3 py-2 backdrop-blur-sm">
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={zoomOut}
-                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-                  aria-label="Zoom out"
-                >
-                  <ZoomOut className="size-4" />
-                </button>
-                <span className="min-w-[3rem] text-center text-xs font-medium text-muted-foreground">
-                  {Math.round(scale * 100)}%
-                </span>
-                <button
-                  onClick={zoomIn}
-                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-                  aria-label="Zoom in"
-                >
-                  <ZoomIn className="size-4" />
-                </button>
-                <button
-                  onClick={resetZoom}
-                  className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-                  aria-label="Reset zoom"
-                >
-                  <RotateCcw className="size-3.5" />
-                </button>
-              </div>
-              <button
-                onClick={toggleFullscreen}
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-                aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
-              >
-                {isFullscreen ? <Minimize className="size-4" /> : <Maximize className="size-4" />}
-              </button>
-            </div>
-            <div className="flex-1 overflow-auto" style={{ minHeight: isFullscreen ? "calc(100vh - 50px)" : "70vh" }}>
-              <iframe
-                src={url}
-                title="Ticket PDF"
-                className="border-0"
-                style={{
-                  width: `${scale * 100}%`,
-                  height: `${scale * 100}%`,
-                  minHeight: isFullscreen ? "calc(100vh - 50px)" : "70vh",
-                  transformOrigin: "top left",
-                }}
-              />
-            </div>
-          </>
-        )}
+        {isFullscreen ? <Minimize className="size-4" /> : <Maximize className="size-4" />}
+      </button>
+    </div>
+  );
 
-        {/* Non-iOS: toolbar + canvas-rendered pages */}
-        {!isIOS && pages.length > 0 && (
-          <div className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-white/10 bg-[#0d0d0f]/90 px-3 py-2 backdrop-blur-sm">
-            <div className="flex items-center gap-1">
-              <button
-                onClick={zoomOut}
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-                aria-label="Zoom out"
-              >
-                <ZoomOut className="size-4" />
-              </button>
-              <span className="min-w-[3rem] text-center text-xs font-medium text-muted-foreground">
-                {Math.round(scale * 100)}%
-              </span>
-              <button
-                onClick={zoomIn}
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-                aria-label="Zoom in"
-              >
-                <ZoomIn className="size-4" />
-              </button>
-              <button
-                onClick={resetZoom}
-                className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-                aria-label="Reset zoom"
-              >
-                <RotateCcw className="size-3.5" />
-              </button>
-            </div>
+  const pdfContent = isIOS && url ? (
+    <div className="flex-1 overflow-auto">
+      <iframe
+        src={url}
+        title="Ticket PDF"
+        className="border-0"
+        style={{
+          width: `${scale * 100}%`,
+          height: "100%",
+          minHeight: isFullscreen ? "calc(100vh - 50px)" : "70vh",
+        }}
+      />
+    </div>
+  ) : (
+    <>
+      {loading && (
+        <div className="flex flex-col items-center gap-3 py-12">
+          <Loader2 className="size-8 animate-spin text-gold-400" />
+          <p className="text-sm text-muted-foreground">Rendering PDF…</p>
+        </div>
+      )}
+      {error && (
+        <p className="py-8 text-center text-sm text-red-400">{error}</p>
+      )}
+      {pages.length > 0 && (
+        <div
+          ref={scrollRef}
+          className="flex-1 overflow-auto"
+          onTouchStart={onTouchStart}
+          onTouchMove={onTouchMove}
+        >
+          <div
+            className="space-y-3 p-2"
+            style={{ width: `${scale * 100}%` }}
+          >
+            {pages.map((src, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={i}
+                src={src}
+                alt={`Page ${i + 1}`}
+                className="w-full rounded-lg border border-white/10"
+              />
+            ))}
+          </div>
+        </div>
+      )}
+    </>
+  );
+
+  // Fullscreen: render as a portal on top of everything (works on iOS)
+  if (isFullscreen && open) {
+    return createPortal(
+      <div className="fixed inset-0 z-[300] flex flex-col bg-[#0d0d0f]">
+        <div className="flex items-center justify-between gap-2 border-b border-white/10 bg-[#0d0d0f] px-3 py-2">
+          <div className="flex items-center gap-1">
             <button
-              onClick={toggleFullscreen}
+              onClick={zoomOut}
               className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
-              aria-label={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
+              aria-label="Zoom out"
             >
-              {isFullscreen ? <Minimize className="size-4" /> : <Maximize className="size-4" />}
+              <ZoomOut className="size-4" />
+            </button>
+            <span className="min-w-[3rem] text-center text-xs font-medium text-muted-foreground">
+              {Math.round(scale * 100)}%
+            </span>
+            <button
+              onClick={zoomIn}
+              className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+              aria-label="Zoom in"
+            >
+              <ZoomIn className="size-4" />
+            </button>
+            <button
+              onClick={resetZoom}
+              className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+              aria-label="Reset zoom"
+            >
+              <RotateCcw className="size-3.5" />
             </button>
           </div>
-        )}
-
-        {!isIOS && loading && (
-          <div className="flex flex-col items-center gap-3 py-12">
-            <Loader2 className="size-8 animate-spin text-gold-400" />
-            <p className="text-sm text-muted-foreground">Rendering PDF…</p>
+          <button
+            onClick={() => {
+              if (document.fullscreenElement) document.exitFullscreen();
+              setIsFullscreen(false);
+            }}
+            className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
+            aria-label="Exit fullscreen"
+          >
+            <X className="size-4" />
+          </button>
+        </div>
+        {isIOS && url ? (
+          <div className="flex-1 overflow-auto">
+            <iframe
+              src={url}
+              title="Ticket PDF"
+              className="border-0"
+              style={{
+                width: `${scale * 100}%`,
+                height: "100%",
+                minHeight: "calc(100vh - 50px)",
+              }}
+            />
           </div>
-        )}
-        {!isIOS && error && (
-          <p className="py-8 text-center text-sm text-red-400">{error}</p>
-        )}
-        {!isIOS && pages.length > 0 && (
+        ) : (
           <div
-            ref={scrollRef}
             className="flex-1 overflow-auto"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
           >
-            <div
-              className="space-y-3 p-2"
-              style={{
-                width: `${scale * 100}%`,
-              }}
-            >
+            <div className="space-y-3 p-2" style={{ width: `${scale * 100}%` }}>
               {pages.map((src, i) => (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -284,21 +310,18 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
             </div>
           </div>
         )}
+      </div>,
+      document.body
+    );
+  }
 
-        {/* Fullscreen close button */}
-        {isFullscreen && (
-          <button
-            onClick={() => {
-              if (document.fullscreenElement) document.exitFullscreen();
-              setIsFullscreen(false);
-              onClose();
-            }}
-            className="absolute right-3 top-3 z-20 rounded-full bg-black/60 p-2 text-muted-foreground hover:text-foreground"
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        )}
+  const showContent = isIOS ? !!url : pages.length > 0 || loading || !!error;
+
+  return (
+    <Drawer open={open} onClose={onClose} title="Ticket PDF">
+      <div ref={containerRef} className="flex flex-col">
+        {showContent && toolbar}
+        {pdfContent}
       </div>
     </Drawer>
   );
