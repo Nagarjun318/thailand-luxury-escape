@@ -14,23 +14,22 @@ let overlayCounter = 0;
  * navigating the page behind it.
  */
 function useBackClose(open: boolean, onClose: () => void) {
-  const idRef = React.useRef<string>("");
+  const onCloseRef = React.useRef(onClose);
+  React.useEffect(() => { onCloseRef.current = onClose; });
+
   const closedByPopRef = React.useRef(false);
 
   React.useEffect(() => {
     if (!open) return;
 
-    // Generate a unique marker for this overlay instance.
     const id = `overlay-${++overlayCounter}`;
-    idRef.current = id;
     closedByPopRef.current = false;
 
     history.pushState({ overlayId: id }, "");
 
     const onPop = () => {
-      // Only react if our own entry was popped (or we're still the top overlay).
       closedByPopRef.current = true;
-      onClose();
+      onCloseRef.current();
     };
     window.addEventListener("popstate", onPop);
 
@@ -42,7 +41,7 @@ function useBackClose(open: boolean, onClose: () => void) {
         history.back();
       }
     };
-  }, [open, onClose]);
+  }, [open]); // deliberately omit onClose — stored in ref
 }
 
 interface DrawerProps {
