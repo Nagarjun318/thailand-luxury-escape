@@ -91,19 +91,33 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
 
       try {
         const pdfjsLib = await import("pdfjs-dist");
-        pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+
+        // Disable worker for iOS Safari where module workers often fail.
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        if (isIOS) {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = "";
+        } else {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
+        }
 
         const resp = await fetch(url);
         if (!resp.ok) throw new Error("Failed to fetch PDF");
         const buffer = await resp.arrayBuffer();
 
-        const pdf = await pdfjsLib.getDocument({ data: new Uint8Array(buffer) }).promise;
+        const loadingTask = pdfjsLib.getDocument({
+          data: new Uint8Array(buffer),
+          useWorkerFetch: false,
+          isEvalSupported: false,
+          useSystemFonts: true,
+        });
+        const pdf = await loadingTask.promise;
         const rendered: string[] = [];
 
         for (let i = 1; i <= pdf.numPages; i++) {
           if (cancelled) return;
           const page = await pdf.getPage(i);
-          const s = 2;
+          // Use lower scale on iOS to avoid canvas size limits
+          const s = isIOS ? 1.5 : 2;
           const viewport = page.getViewport({ scale: s });
           const canvas = document.createElement("canvas");
           canvas.width = viewport.width;

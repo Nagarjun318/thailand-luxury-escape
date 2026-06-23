@@ -18,11 +18,13 @@ function useBackClose(open: boolean, onClose: () => void) {
   React.useEffect(() => { onCloseRef.current = onClose; });
 
   const closedByPopRef = React.useRef(false);
+  const idRef = React.useRef("");
 
   React.useEffect(() => {
     if (!open) return;
 
     const id = `overlay-${++overlayCounter}`;
+    idRef.current = id;
     closedByPopRef.current = false;
 
     history.pushState({ overlayId: id }, "");
@@ -37,8 +39,13 @@ function useBackClose(open: boolean, onClose: () => void) {
       window.removeEventListener("popstate", onPop);
 
       // If closed programmatically (not by back gesture), remove our history entry.
-      if (!closedByPopRef.current && history.state?.overlayId === id) {
-        history.back();
+      // Use setTimeout to avoid racing with Link navigations that push state.
+      if (!closedByPopRef.current) {
+        setTimeout(() => {
+          if (history.state?.overlayId === id) {
+            history.back();
+          }
+        }, 0);
       }
     };
   }, [open]); // deliberately omit onClose — stored in ref
