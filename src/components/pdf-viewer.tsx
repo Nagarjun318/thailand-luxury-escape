@@ -20,8 +20,15 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
   const [error, setError] = React.useState<string | null>(null);
   const [scale, setScale] = React.useState(1);
   const [isFullscreen, setIsFullscreen] = React.useState(false);
+  const [isIOS, setIsIOS] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollRef = React.useRef<HTMLDivElement>(null);
+
+  // Detect iOS on mount
+  React.useEffect(() => {
+    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1));
+  }, []);
 
   // Track pinch gesture
   const pinchRef = React.useRef({ startDist: 0, startScale: 1 });
@@ -81,6 +88,7 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
 
   React.useEffect(() => {
     if (!open || !url) return;
+    if (isIOS) return; // iOS uses native embed, no canvas rendering needed
     let cancelled = false;
 
     (async () => {
@@ -137,7 +145,7 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
     return () => {
       cancelled = true;
     };
-  }, [open, url]);
+  }, [open, url, isIOS]);
 
   return (
     <Drawer open={open} onClose={isFullscreen ? () => {} : onClose} title="Ticket PDF">
@@ -149,8 +157,17 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
             : "flex flex-col"
         }
       >
-        {/* Toolbar */}
-        {pages.length > 0 && (
+        {/* iOS: use native PDF rendering via iframe */}
+        {isIOS && url && (
+          <iframe
+            src={url}
+            title="Ticket PDF"
+            className="h-[70vh] w-full rounded-lg border border-white/10"
+          />
+        )}
+
+        {/* Non-iOS: toolbar + canvas-rendered pages */}
+        {!isIOS && pages.length > 0 && (
           <div className="sticky top-0 z-10 flex items-center justify-between gap-2 border-b border-white/10 bg-[#0d0d0f]/90 px-3 py-2 backdrop-blur-sm">
             <div className="flex items-center gap-1">
               <button
@@ -188,16 +205,16 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
           </div>
         )}
 
-        {loading && (
+        {!isIOS && loading && (
           <div className="flex flex-col items-center gap-3 py-12">
             <Loader2 className="size-8 animate-spin text-gold-400" />
             <p className="text-sm text-muted-foreground">Rendering PDF…</p>
           </div>
         )}
-        {error && (
+        {!isIOS && error && (
           <p className="py-8 text-center text-sm text-red-400">{error}</p>
         )}
-        {pages.length > 0 && (
+        {!isIOS && pages.length > 0 && (
           <div
             ref={scrollRef}
             className="flex-1 overflow-auto"

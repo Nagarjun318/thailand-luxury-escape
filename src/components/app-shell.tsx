@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
@@ -18,6 +18,15 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const timeZone = useTripStore((s) => s.settings.timeZone) ?? "ICT";
   const [moreOpen, setMoreOpen] = useState(false);
   const isMoreActive = moreNavItems.some((item) => pathname === item.href);
+
+  // Close the More drawer when the route changes
+  const prevPathRef = useRef(pathname);
+  useEffect(() => {
+    if (pathname !== prevPathRef.current) {
+      prevPathRef.current = pathname;
+      setMoreOpen(false);
+    }
+  }, [pathname]);
 
   // Apply the selected display zone before children render so all date/time
   // formatting reflects it. Keying the content subtree below forces a remount
@@ -158,7 +167,6 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={() => setMoreOpen(false)}
                 className={cn(
                   "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors",
                   active
