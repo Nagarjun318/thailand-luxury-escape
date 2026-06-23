@@ -127,7 +127,7 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
   }, [open, url]);
 
   return (
-    <Drawer open={open} onClose={isFullscreen ? undefined : onClose} title="Ticket PDF">
+    <Drawer open={open} onClose={isFullscreen ? () => {} : onClose} title="Ticket PDF">
       <div
         ref={containerRef}
         className={
