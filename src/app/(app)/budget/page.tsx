@@ -90,9 +90,10 @@ export default function BudgetPage() {
       );
     })
     .reduce((s, e) => s + e.amountTHB, 0);
+  const totalCashINR = thbToInr(trip.budgetTHB, settings.thbToInr);
   const remainingCashINR = Math.max(
     0,
-    trip.budgetCashINR - thbToInr(totalSpend, settings.thbToInr)
+    totalCashINR - thbToInr(totalSpend, settings.thbToInr)
   );
 
   const filtered = expenses
@@ -158,7 +159,7 @@ export default function BudgetPage() {
         <StatCard
           label="Remaining Cash"
           value={formatINR(remainingCashINR)}
-          sub={`of ${formatINR(trip.budgetCashINR)}`}
+          sub={`of ${formatINR(totalCashINR)}`}
           icon={Banknote}
         />
       </FadeIn>

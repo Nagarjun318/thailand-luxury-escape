@@ -11,6 +11,8 @@ import {
   Bath,
   Pill,
   Glasses,
+  Plus,
+  Trash2,
   type LucideIcon,
 } from "lucide-react";
 import { useTripStore } from "@/lib/store";
@@ -44,12 +46,22 @@ const ORDER: PackingItem["category"][] = [
 
 export default function PackingPage() {
   const mounted = useMounted();
-  const { packing, togglePacking } = useTripStore();
+  const { packing, togglePacking, addPacking, deletePacking } = useTripStore();
+  const [addingTo, setAddingTo] = React.useState<PackingItem["category"] | null>(null);
+  const [newName, setNewName] = React.useState("");
 
   if (!mounted) return null;
 
   const packed = packing.filter((p) => p.packed).length;
   const completion = pct(packed, packing.length);
+
+  const handleAdd = (category: PackingItem["category"]) => {
+    const trimmed = newName.trim();
+    if (!trimmed) return;
+    addPacking({ name: trimmed, category, packed: false });
+    setNewName("");
+    setAddingTo(null);
+  };
 
   return (
     <>
@@ -108,31 +120,84 @@ export default function PackingPage() {
                 </div>
                 <div className="space-y-1">
                   {items.map((item) => (
-                    <button
+                    <div
                       key={item.id}
-                      onClick={() => togglePacking(item.id)}
-                      className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-white/[0.03]"
+                      className="flex w-full items-center gap-3 rounded-xl px-2 py-2 text-left transition-colors hover:bg-white/[0.03] group"
                     >
-                      <span
-                        className={cn(
-                          "flex size-5 shrink-0 items-center justify-center rounded-md border transition-colors",
-                          item.packed
-                            ? "border-emerald-400 bg-emerald-400 text-black"
-                            : "border-white/25"
-                        )}
+                      <button
+                        onClick={() => togglePacking(item.id)}
+                        className="flex size-5 shrink-0 items-center justify-center rounded-md border transition-colors"
                       >
-                        {item.packed && <Check className="size-3.5" />}
-                      </span>
+                        <span
+                          className={cn(
+                            "flex size-5 items-center justify-center rounded-md border transition-colors",
+                            item.packed
+                              ? "border-emerald-400 bg-emerald-400 text-black"
+                              : "border-white/25"
+                          )}
+                        >
+                          {item.packed && <Check className="size-3.5" />}
+                        </span>
+                      </button>
                       <span
                         className={cn(
-                          "text-sm",
+                          "flex-1 text-sm",
                           item.packed && "text-muted-foreground line-through"
                         )}
                       >
                         {item.name}
                       </span>
-                    </button>
+                      <button
+                        onClick={() => deletePacking(item.id)}
+                        className="opacity-0 group-hover:opacity-100 transition-opacity text-muted-foreground hover:text-red-400 p-1"
+                        aria-label={`Delete ${item.name}`}
+                      >
+                        <Trash2 className="size-3.5" />
+                      </button>
+                    </div>
                   ))}
+
+                  {/* Add item inline form */}
+                  {addingTo === category ? (
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        handleAdd(category);
+                      }}
+                      className="flex items-center gap-2 px-2 py-1.5"
+                    >
+                      <input
+                        autoFocus
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        placeholder="Item name…"
+                        className="flex-1 rounded-lg border border-white/15 bg-white/[0.03] px-3 py-1.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-gold-400 focus:outline-none"
+                        onBlur={() => {
+                          if (!newName.trim()) {
+                            setAddingTo(null);
+                            setNewName("");
+                          }
+                        }}
+                      />
+                      <button
+                        type="submit"
+                        className="rounded-lg bg-gold-500/20 px-3 py-1.5 text-xs font-medium text-gold-300 hover:bg-gold-500/30 transition-colors"
+                      >
+                        Add
+                      </button>
+                    </form>
+                  ) : (
+                    <button
+                      onClick={() => {
+                        setAddingTo(category);
+                        setNewName("");
+                      }}
+                      className="flex w-full items-center gap-2 rounded-xl px-2 py-2 text-sm text-muted-foreground transition-colors hover:bg-white/[0.03] hover:text-foreground"
+                    >
+                      <Plus className="size-4" />
+                      Add item
+                    </button>
+                  )}
                 </div>
               </Card>
             </FadeIn>

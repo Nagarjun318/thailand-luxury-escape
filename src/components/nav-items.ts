@@ -41,11 +41,15 @@ export const navItems: NavItem[] = [
   { href: "/settings", label: "Settings", short: "Settings", icon: Settings, group: "tools" },
 ];
 
-/** Items surfaced in the mobile bottom navigation bar. */
+/** Items surfaced in the mobile bottom navigation bar (max 4). */
 export const bottomNavItems: NavItem[] = [
   navItems[0], // Dashboard
   navItems[1], // Itinerary
   navItems[2], // Tickets
   navItems[3], // Budget
-  navItems[4], // Shopping
 ];
+
+/** Items shown in the mobile "More" drawer. */
+export const moreNavItems: NavItem[] = navItems.filter(
+  (item) => !bottomNavItems.includes(item)
+);

@@ -28,6 +28,7 @@ import { Card } from "@/components/ui/card";
 import { Drawer } from "@/components/ui/drawer";
 import { Button } from "@/components/ui/button";
 import { QRCode } from "@/components/qr-code";
+import { PdfViewer } from "@/components/pdf-viewer";
 import { formatDate, formatTime, cn } from "@/lib/utils";
 import type { Ticket, TicketCategory, TicketStatus, TicketCode } from "@/lib/types";
 
@@ -168,6 +169,7 @@ function TicketDrawer({
   const pdfRef = React.useRef<HTMLInputElement>(null);
   const [pdfBusy, setPdfBusy] = React.useState(false);
   const [pdfMsg, setPdfMsg] = React.useState<string | null>(null);
+  const [pdfViewOpen, setPdfViewOpen] = React.useState(false);
 
   const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -378,15 +380,18 @@ function TicketDrawer({
               <p className="mt-2 text-xs text-muted-foreground">{pdfMsg}</p>
             )}
             {ticket.pdfUrl && (
-              <a
-                href={ticket.pdfUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <button
+                onClick={() => setPdfViewOpen(true)}
                 className="mt-2 inline-flex items-center gap-1.5 text-xs text-gold-300 hover:text-gold-200"
               >
                 <ExternalLink className="size-3.5" /> View full PDF
-              </a>
+              </button>
             )}
+            <PdfViewer
+              url={ticket.pdfUrl ?? null}
+              open={pdfViewOpen}
+              onClose={() => setPdfViewOpen(false)}
+            />
           </div>
 
           {/* Local ticket image */}

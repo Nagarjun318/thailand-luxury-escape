@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { Plane, Sparkles } from "lucide-react";
+import { Plane, Sparkles, MoreHorizontal } from "lucide-react";
 import { cn, setDisplayTimeZone } from "@/lib/utils";
 import { useTripStore } from "@/lib/store";
-import { navItems, bottomNavItems } from "./nav-items";
+import { navItems, bottomNavItems, moreNavItems } from "./nav-items";
+import { Drawer } from "./ui/drawer";
 import { TimeZoneToggle } from "./timezone-toggle";
 import { TimeMachine } from "./time-machine";
 import { trip } from "@/lib/seed";
@@ -14,6 +16,8 @@ import { trip } from "@/lib/seed";
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const timeZone = useTripStore((s) => s.settings.timeZone) ?? "ICT";
+  const [moreOpen, setMoreOpen] = useState(false);
+  const isMoreActive = moreNavItems.some((item) => pathname === item.href);
 
   // Apply the selected display zone before children render so all date/time
   // formatting reflects it. Keying the content subtree below forces a remount
@@ -125,8 +129,50 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
             );
           })}
+          <button
+            onClick={() => setMoreOpen(true)}
+            className={cn(
+              "relative flex flex-1 flex-col items-center gap-1 rounded-xl py-1.5 text-[10px] font-medium transition-colors",
+              isMoreActive ? "text-gold-300" : "text-muted-foreground"
+            )}
+          >
+            <MoreHorizontal className="size-5" />
+            More
+            {isMoreActive && (
+              <motion.span
+                layoutId="bottom-active"
+                className="absolute -top-1 h-1 w-8 rounded-full bg-gold-400"
+              />
+            )}
+          </button>
         </div>
       </nav>
+
+      {/* More drawer */}
+      <Drawer open={moreOpen} onClose={() => setMoreOpen(false)} title="More">
+        <nav className="flex flex-col gap-1 p-4">
+          {moreNavItems.map((item) => {
+            const active = pathname === item.href;
+            const Icon = item.icon;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => setMoreOpen(false)}
+                className={cn(
+                  "flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium transition-colors",
+                  active
+                    ? "bg-gold-500/15 text-gold-300"
+                    : "text-muted-foreground hover:bg-white/5 hover:text-foreground"
+                )}
+              >
+                <Icon className="size-5" />
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+      </Drawer>
     </div>
   );
 }
