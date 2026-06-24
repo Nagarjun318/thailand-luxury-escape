@@ -6,8 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-let overlayCounter = 0;
-
 /**
  * Hook that integrates an overlay (drawer/modal) with the browser history
  * so that the mobile back-swipe gesture closes the overlay instead of
@@ -17,38 +15,22 @@ function useBackClose(open: boolean, onClose: () => void) {
   const onCloseRef = React.useRef(onClose);
   React.useEffect(() => { onCloseRef.current = onClose; });
 
-  const closedByPopRef = React.useRef(false);
-  const idRef = React.useRef("");
-
   React.useEffect(() => {
     if (!open) return;
 
-    const id = `overlay-${++overlayCounter}`;
-    idRef.current = id;
-    closedByPopRef.current = false;
-
-    history.pushState({ overlayId: id }, "");
+    history.pushState({ overlay: true }, "");
 
     const onPop = () => {
-      closedByPopRef.current = true;
       onCloseRef.current();
     };
     window.addEventListener("popstate", onPop);
 
     return () => {
       window.removeEventListener("popstate", onPop);
-
-      // If closed programmatically (not by back gesture), remove our history entry.
-      // Use setTimeout to avoid racing with Link navigations that push state.
-      if (!closedByPopRef.current) {
-        setTimeout(() => {
-          if (history.state?.overlayId === id) {
-            history.back();
-          }
-        }, 0);
-      }
+      // Do NOT call history.back() here — it causes cascading closes
+      // on Android. A stale history entry is harmless.
     };
-  }, [open]); // deliberately omit onClose — stored in ref
+  }, [open]);
 }
 
 interface DrawerProps {
