@@ -217,7 +217,7 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
   const fullscreenPortal =
     isFullscreen && open
       ? createPortal(
-          <div className="fixed inset-0 z-[300] flex flex-col bg-[#0d0d0f]">
+          <div className="fixed inset-0 z-[300] flex flex-col bg-[#0d0d0f]" style={{ paddingTop: "env(safe-area-inset-top)" }}>
             <div className="flex items-center justify-between gap-2 border-b border-white/10 bg-[#0d0d0f] px-3 py-2">
               <div className="flex items-center gap-1">
                 <button
