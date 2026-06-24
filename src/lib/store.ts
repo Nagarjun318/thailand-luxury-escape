@@ -133,9 +133,21 @@ export const useTripStore = create<TripState>()(
         };
       },
 
-      hydrateFromServer: (data) =>
+      hydrateFromServer: (data) => {
+        // Merge seed notes into server activities that lack them
+        let activities = data.activities ?? get().activities;
+        const noteMap = new Map(
+          seedActivities.filter((a) => a.notes).map((a) => [a.id, a.notes])
+        );
+        if (noteMap.size > 0) {
+          activities = activities.map((a) => {
+            const seedNote = noteMap.get(a.id);
+            if (seedNote && !a.notes) return { ...a, notes: seedNote };
+            return a;
+          });
+        }
         set((s) => ({
-          activities: data.activities ?? s.activities,
+          activities,
           expenses: data.expenses ?? s.expenses,
           shopping: data.shopping ?? s.shopping,
           packing: data.packing ?? s.packing,
@@ -146,7 +158,8 @@ export const useTripStore = create<TripState>()(
           buses: data.buses?.length ? data.buses : s.buses,
           emergency: data.emergency?.length ? data.emergency : s.emergency,
           settings: data.settings ?? s.settings,
-        })),
+        }));
+      },
 
       toggleActivity: (id) => {
         set((s) => ({
@@ -330,7 +343,7 @@ export const useTripStore = create<TripState>()(
       },
     }),
     {
-      name: "thailand-luxury-escape-v1",
+      name: "thailand-luxury-escape-v2",
       partialize: (s) => ({
         activities: s.activities,
         expenses: s.expenses,
@@ -345,6 +358,20 @@ export const useTripStore = create<TripState>()(
         settings: s.settings,
       }),
       onRehydrateStorage: () => (state) => {
+        if (state) {
+          // Merge notes from seed into stored activities (in case DB lacks them)
+          const noteMap = new Map(
+            seedActivities.filter((a) => a.notes).map((a) => [a.id, a.notes])
+          );
+          if (noteMap.size > 0) {
+            const patched = state.activities.map((a) => {
+              const seedNote = noteMap.get(a.id);
+              if (seedNote && !a.notes) return { ...a, notes: seedNote };
+              return a;
+            });
+            state.activities = patched;
+          }
+        }
         state?.setHydrated(true);
       },
     }

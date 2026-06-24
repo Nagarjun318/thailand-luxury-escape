@@ -44,7 +44,8 @@ const act = (
   startTime: string,
   endTime: string,
   transport: Activity["transport"],
-  emoji: string
+  emoji: string,
+  notes?: string
 ): Activity => ({
   id,
   day,
@@ -56,6 +57,7 @@ const act = (
   cost: 0,
   completed: false,
   emoji,
+  notes,
 });
 
 export const seedActivities: Activity[] = [
@@ -89,25 +91,25 @@ export const seedActivities: Activity[] = [
   act("act_d3_4", 3, "Travel to Pattaya North Bus Terminal", "Pattaya", "2026-06-28T10:00:00+07:00", "2026-06-28T10:30:00+07:00", "taxi", "🚕"),
   act("act_d3_5", 3, "Bus Pattaya → Mo Chit", "Pattaya → Bangkok", "2026-06-28T11:00:00+07:00", "2026-06-28T13:30:00+07:00", "bus", "🚌"),
   act("act_d3_6", 3, "Check-in at Stay Hotel Bangkok", "Stay Hotel, Bangkok", "2026-06-28T14:00:00+07:00", "2026-06-28T14:30:00+07:00", "taxi", "🏨"),
-  act("act_d3_7", 3, "Chatuchak Weekend Market", "Chatuchak, Bangkok", "2026-06-28T14:30:00+07:00", "2026-06-28T18:30:00+07:00", "metro", "🛍️"),
-  act("act_d3_8", 3, "Travel to Asiatique", "Bangkok", "2026-06-28T18:30:00+07:00", "2026-06-28T19:00:00+07:00", "metro", "🚇"),
-  act("act_d3_9", 3, "Asiatique The Riverfront + Sky Flyer", "Charoen Krung, Bangkok", "2026-06-28T19:00:00+07:00", "2026-06-28T21:00:00+07:00", "walk", "🎡"),
-  act("act_d3_10", 3, "Travel to Banthat Thong Road", "Bangkok", "2026-06-28T21:00:00+07:00", "2026-06-28T21:30:00+07:00", "taxi", "🚕"),
-  act("act_d3_11", 3, "Dinner & Dessert at Banthat Thong Road", "Pathum Wan, Bangkok", "2026-06-28T21:30:00+07:00", "2026-06-28T23:00:00+07:00", "walk", "🍜"),
-  act("act_d3_12", 3, "Return to Hotel", "Bangkok", "2026-06-28T23:00:00+07:00", "2026-06-28T23:30:00+07:00", "taxi", "🏨"),
+  act("act_d3_7", 3, "Chatuchak Weekend Market", "Chatuchak, Bangkok", "2026-06-28T14:30:00+07:00", "2026-06-28T18:30:00+07:00", "metro", "🛍️", "MRT Sutthisan → MRT Chatuchak Park"),
+  act("act_d3_8", 3, "Return to Hotel from Chatuchak", "Bangkok", "2026-06-28T18:30:00+07:00", "2026-06-28T19:00:00+07:00", "metro", "🚇", "MRT Chatuchak Park → MRT Sutthisan"),
+  act("act_d3_9", 3, "Travel to Asiatique", "Bangkok", "2026-06-28T19:00:00+07:00", "2026-06-28T19:45:00+07:00", "metro", "🚇", "MRT Sutthisan → MRT Silom\nWalk to BTS Sala Daeng\nBTS Sala Daeng → BTS Saphan Taksin\nFree Boat → Asiatique"),
+  act("act_d3_10", 3, "Asiatique The Riverfront + Sky Flyer", "Charoen Krung, Bangkok", "2026-06-28T19:45:00+07:00", "2026-06-28T21:30:00+07:00", "walk", "🎡"),
+  act("act_d3_11", 3, "Travel to Banthat Thong Road", "Bangkok", "2026-06-28T21:30:00+07:00", "2026-06-28T22:00:00+07:00", "taxi", "🚕"),
+  act("act_d3_12", 3, "Dinner & Dessert at Banthat Thong Road", "Pathum Wan, Bangkok", "2026-06-28T22:00:00+07:00", "2026-06-28T23:00:00+07:00", "walk", "🍜"),
+  act("act_d3_13", 3, "Return to Hotel", "Bangkok", "2026-06-28T23:00:00+07:00", "2026-06-28T23:30:00+07:00", "taxi", "🏨"),
 
   // ───────────────── Day 4 · Mon 29 Jun · Bangkok ─────────────────
   act("act_d4_1", 4, "Breakfast", "Stay Hotel, Bangkok", "2026-06-29T08:00:00+07:00", "2026-06-29T09:00:00+07:00", "walk", "🍽️"),
-  act("act_d4_2", 4, "Travel to Space & Time Cube+", "Bangkok", "2026-06-29T09:15:00+07:00", "2026-06-29T10:00:00+07:00", "metro", "🚇"),
+  act("act_d4_2", 4, "Travel to Space & Time Cube+", "Bangkok", "2026-06-29T09:15:00+07:00", "2026-06-29T10:00:00+07:00", "metro", "🚇", "MRT Sutthisan → MRT Phasi Charoen"),
   act("act_d4_3", 4, "Space & Time Cube+", "Bangkok", "2026-06-29T10:00:00+07:00", "2026-06-29T11:30:00+07:00", "walk", "🌌"),
-  act("act_d4_4", 4, "Travel to Sathorn Pier", "Bangkok", "2026-06-29T11:30:00+07:00", "2026-06-29T12:00:00+07:00", "metro", "🚇"),
-  act("act_d4_5", 4, "Chao Phraya River Boat Ride", "Chao Phraya River", "2026-06-29T12:00:00+07:00", "2026-06-29T12:30:00+07:00", "boat", "🛥️"),
-  act("act_d4_6", 4, "ICONSIAM", "Khlong San, Bangkok", "2026-06-29T12:30:00+07:00", "2026-06-29T17:00:00+07:00", "ferry", "🏬"),
-  act("act_d4_7", 4, "Travel to Chocolate Ville", "Bangkok", "2026-06-29T17:00:00+07:00", "2026-06-29T17:45:00+07:00", "taxi", "🚕"),
-  act("act_d4_8", 4, "Chocolate Ville", "Lat Phrao, Bangkok", "2026-06-29T18:00:00+07:00", "2026-06-29T20:30:00+07:00", "walk", "🍫"),
-  act("act_d4_9", 4, "Travel to Pratunam", "Bangkok", "2026-06-29T20:30:00+07:00", "2026-06-29T21:00:00+07:00", "taxi", "🚕"),
-  act("act_d4_10", 4, "Pratunam Market + Dinner", "Ratchathewi, Bangkok", "2026-06-29T21:00:00+07:00", "2026-06-29T22:30:00+07:00", "walk", "👗"),
-  act("act_d4_11", 4, "Return to Hotel", "Bangkok", "2026-06-29T23:00:00+07:00", "2026-06-29T23:30:00+07:00", "taxi", "🏨"),
+  act("act_d4_4", 4, "Travel to ICONSIAM", "Bangkok", "2026-06-29T11:30:00+07:00", "2026-06-29T12:30:00+07:00", "metro", "🚇", "MRT Phasi Charoen → MRT Silom\nBTS Sala Daeng → BTS Saphan Taksin\nBoat to ICONSIAM"),
+  act("act_d4_5", 4, "ICONSIAM", "Khlong San, Bangkok", "2026-06-29T12:30:00+07:00", "2026-06-29T17:00:00+07:00", "ferry", "🏬"),
+  act("act_d4_6", 4, "Travel to Chocolate Ville", "Bangkok", "2026-06-29T17:00:00+07:00", "2026-06-29T17:45:00+07:00", "taxi", "🚕"),
+  act("act_d4_7", 4, "Chocolate Ville", "Lat Phrao, Bangkok", "2026-06-29T18:00:00+07:00", "2026-06-29T20:30:00+07:00", "walk", "🍫"),
+  act("act_d4_8", 4, "Travel to Pratunam", "Bangkok", "2026-06-29T20:30:00+07:00", "2026-06-29T21:00:00+07:00", "taxi", "🚕"),
+  act("act_d4_9", 4, "Pratunam Market + Dinner", "Ratchathewi, Bangkok", "2026-06-29T21:00:00+07:00", "2026-06-29T22:30:00+07:00", "walk", "👗"),
+  act("act_d4_10", 4, "Return to Hotel", "Bangkok", "2026-06-29T23:00:00+07:00", "2026-06-29T23:30:00+07:00", "taxi", "🏨"),
 
   // ──────────── Day 5 · Tue 30 Jun · Shopping & Departure ────────────
   act("act_d5_1", 5, "Breakfast", "Stay Hotel, Bangkok", "2026-06-30T08:00:00+07:00", "2026-06-30T09:00:00+07:00", "walk", "🍽️"),

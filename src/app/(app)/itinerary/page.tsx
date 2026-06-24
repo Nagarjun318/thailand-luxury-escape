@@ -228,10 +228,10 @@ function TimelineRow({
               )}
             </div>
             {activity.notes && (
-              <p className="mt-2 flex items-start gap-1.5 rounded-lg bg-white/[0.03] p-2 text-xs text-muted-foreground">
+              <div className="mt-2 flex items-start gap-1.5 rounded-lg bg-white/[0.03] p-2 text-xs text-muted-foreground">
                 <StickyNote className="mt-px size-3.5 shrink-0 text-gold-400" />
-                {activity.notes}
-              </p>
+                <span className="whitespace-pre-line">{activity.notes}</span>
+              </div>
             )}
           </div>
         </div>
