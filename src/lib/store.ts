@@ -134,18 +134,15 @@ export const useTripStore = create<TripState>()(
       },
 
       hydrateFromServer: (data) => {
-        // Merge seed notes into server activities that lack them
-        let activities = data.activities ?? get().activities;
-        const noteMap = new Map(
-          seedActivities.filter((a) => a.notes).map((a) => [a.id, a.notes])
+        // Use seed activities as source of truth, only preserve completed status
+        const serverActivities = data.activities ?? [];
+        const completedSet = new Set(
+          serverActivities.filter((a) => a.completed).map((a) => `${a.day}:${a.title}`)
         );
-        if (noteMap.size > 0) {
-          activities = activities.map((a) => {
-            const seedNote = noteMap.get(a.id);
-            if (seedNote && !a.notes) return { ...a, notes: seedNote };
-            return a;
-          });
-        }
+        const activities = seedActivities.map((a) => ({
+          ...a,
+          completed: completedSet.has(`${a.day}:${a.title}`),
+        }));
         set((s) => ({
           activities,
           expenses: data.expenses ?? s.expenses,
@@ -343,7 +340,7 @@ export const useTripStore = create<TripState>()(
       },
     }),
     {
-      name: "thailand-luxury-escape-v2",
+      name: "thailand-luxury-escape-v3",
       partialize: (s) => ({
         activities: s.activities,
         expenses: s.expenses,
@@ -359,18 +356,14 @@ export const useTripStore = create<TripState>()(
       }),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          // Merge notes from seed into stored activities (in case DB lacks them)
-          const noteMap = new Map(
-            seedActivities.filter((a) => a.notes).map((a) => [a.id, a.notes])
+          // Use seed activities, preserve completed status by day+title
+          const completedSet = new Set(
+            state.activities.filter((a) => a.completed).map((a) => `${a.day}:${a.title}`)
           );
-          if (noteMap.size > 0) {
-            const patched = state.activities.map((a) => {
-              const seedNote = noteMap.get(a.id);
-              if (seedNote && !a.notes) return { ...a, notes: seedNote };
-              return a;
-            });
-            state.activities = patched;
-          }
+          state.activities = seedActivities.map((a) => ({
+            ...a,
+            completed: completedSet.has(`${a.day}:${a.title}`),
+          }));
         }
         state?.setHydrated(true);
       },
