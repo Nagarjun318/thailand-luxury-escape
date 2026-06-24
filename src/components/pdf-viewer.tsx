@@ -38,29 +38,7 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
   const zoomOut = () => setScale((s) => Math.max(s - 0.25, 0.5));
   const resetZoom = () => setScale(1);
 
-  const toggleFullscreen = async () => {
-    const el = containerRef.current;
-    if (!el) return;
-    try {
-      if (!document.fullscreenElement) {
-        await el.requestFullscreen();
-        setIsFullscreen(true);
-      } else {
-        await document.exitFullscreen();
-        setIsFullscreen(false);
-      }
-    } catch {
-      // Fullscreen not supported — fall back to CSS fullscreen
-      setIsFullscreen((f) => !f);
-    }
-  };
-
-  // Listen for fullscreen exit via Escape or browser controls
-  React.useEffect(() => {
-    const handler = () => setIsFullscreen(!!document.fullscreenElement);
-    document.addEventListener("fullscreenchange", handler);
-    return () => document.removeEventListener("fullscreenchange", handler);
-  }, []);
+  const toggleFullscreen = () => setIsFullscreen((f) => !f);
 
   // Pinch-to-zoom handlers
   const onTouchStart = (e: React.TouchEvent) => {
@@ -268,10 +246,7 @@ export function PdfViewer({ url, open, onClose }: PdfViewerProps) {
                 </button>
               </div>
               <button
-                onClick={() => {
-                  if (document.fullscreenElement) document.exitFullscreen();
-                  setIsFullscreen(false);
-                }}
+                onClick={() => setIsFullscreen(false)}
                 className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-white/10 hover:text-foreground"
                 aria-label="Exit fullscreen"
               >
