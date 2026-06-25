@@ -62,7 +62,7 @@ const act = (
 
 export const seedActivities: Activity[] = [
   // ───────────────── Day 1 · Fri 26 Jun · Pattaya ─────────────────
-  act("act_d1_1", 1, "Arrive DMK – Immigration & Breakfast", "Don Mueang Airport", "2026-06-26T04:35:00+07:00", "2026-06-26T06:30:00+07:00", "flight", "✈️"),
+  act("act_d1_1", 1, "Arrive DMK – Immigration & Breakfast", "Don Mueang Airport", "2026-06-26T04:35:00+07:00", "2026-06-26T06:30:00+07:00", "flight", "✈️", "👔 Him: Birthday Dress\n👗 Her: Jean Maxi + Shrug"),
   act("act_d1_2", 1, "Bus DMK → Pattaya", "DMK → Pattaya", "2026-06-26T07:30:00+07:00", "2026-06-26T10:55:00+07:00", "bus", "🚌"),
   act("act_d1_3", 1, "Travel to Bayphere Hotel", "Pattaya", "2026-06-26T11:00:00+07:00", "2026-06-26T11:30:00+07:00", "taxi", "🚕"),
   act("act_d1_4", 1, "Check-in & Freshen Up", "Bayphere Hotel, Jomtien", "2026-06-26T11:30:00+07:00", "2026-06-26T12:00:00+07:00", "walk", "🏨"),
@@ -71,14 +71,14 @@ export const seedActivities: Activity[] = [
   act("act_d1_7", 1, "Pattaya Floating Market", "Pattaya", "2026-06-26T15:15:00+07:00", "2026-06-26T17:15:00+07:00", "taxi", "🛶", "🍽️ Must Try:\nMango Sticky Rice\nCoconut Ice Cream\nFresh Coconut Water\nGrilled Squid"),
   act("act_d1_8", 1, "Travel to Sanctuary of Truth", "Pattaya", "2026-06-26T17:15:00+07:00", "2026-06-26T17:45:00+07:00", "taxi", "🚕"),
   act("act_d1_9", 1, "Sanctuary of Truth", "Naklua, Pattaya", "2026-06-26T18:00:00+07:00", "2026-06-26T20:00:00+07:00", "walk", "🛕"),
-  act("act_d1_10", 1, "Walking Street + Food Street", "South Pattaya", "2026-06-26T20:15:00+07:00", "2026-06-26T22:00:00+07:00", "taxi", "🌃", "🍽️ Must Try:\nChicken Pad Thai\nSeafood Fried Rice\nBanana Nutella Roti"),
+  act("act_d1_10", 1, "Walking Street + Food Street", "South Pattaya", "2026-06-26T20:15:00+07:00", "2026-06-26T22:00:00+07:00", "taxi", "🌃", "👔 Him: Sleeveless T-shirt & Shorts\n👗 Her: Skort & Balloon Shirt\n\n🍽️ Must Try:\nChicken Pad Thai\nSeafood Fried Rice\nBanana Nutella Roti"),
   act("act_d1_11", 1, "7-Eleven Visit", "Pattaya", "2026-06-26T22:00:00+07:00", "2026-06-26T22:30:00+07:00", "walk", "🏪"),
   act("act_d1_12", 1, "Return to Hotel", "Pattaya", "2026-06-26T23:00:00+07:00", "2026-06-26T23:30:00+07:00", "taxi", "🏨"),
 
   // ───────────────── Day 2 · Sat 27 Jun · Pattaya ─────────────────
-  act("act_d2_1", 2, "Breakfast", "Bayphere Hotel, Jomtien", "2026-06-27T07:00:00+07:00", "2026-06-27T08:00:00+07:00", "walk", "🍽️"),
+  act("act_d2_1", 2, "Breakfast", "Bayphere Hotel, Jomtien", "2026-06-27T07:00:00+07:00", "2026-06-27T08:00:00+07:00", "walk", "🍽️", "👔 Him: Brown Shirt & White Pant\n👗 Her: White Worldwide Maxi Dress"),
   act("act_d2_2", 2, "Travel to Pier", "Pattaya", "2026-06-27T08:30:00+07:00", "2026-06-27T09:00:00+07:00", "taxi", "🚕"),
-  act("act_d2_3", 2, "Coral Island (Speedboat Tour)", "Koh Larn, Pattaya Bay", "2026-06-27T09:00:00+07:00", "2026-06-27T15:00:00+07:00", "boat", "🏝️", "🍽️ Must Try:\nFresh Coconut\nPineapple\nSeafood Lunch"),
+  act("act_d2_3", 2, "Coral Island (Speedboat Tour)", "Koh Larn, Pattaya Bay", "2026-06-27T09:00:00+07:00", "2026-06-27T15:00:00+07:00", "boat", "🏝️", "👗 Her: Swim Dress\n\n🍽️ Must Try:\nFresh Coconut\nPineapple\nSeafood Lunch"),
   act("act_d2_4", 2, "Lunch", "Pattaya", "2026-06-27T15:00:00+07:00", "2026-06-27T16:00:00+07:00", "walk", "🍽️"),
   act("act_d2_5", 2, "Mermaid Cafe / Drift Cafe", "Pratumnak Hill, Pattaya", "2026-06-27T16:30:00+07:00", "2026-06-27T18:00:00+07:00", "taxi", "🧜‍♀️"),
   act("act_d2_6", 2, "Pattaya Park Night Market + Dinner", "Jomtien, Pattaya", "2026-06-27T19:00:00+07:00", "2026-06-27T22:00:00+07:00", "taxi", "🏮"),
@@ -86,21 +86,21 @@ export const seedActivities: Activity[] = [
 
   // ───────────── Day 3 · Sun 28 Jun · Pattaya → Bangkok ─────────────
   act("act_d3_1", 3, "Breakfast", "Bayphere Hotel, Jomtien", "2026-06-28T07:00:00+07:00", "2026-06-28T08:00:00+07:00", "walk", "🍽️"),
-  act("act_d3_2", 3, "Pack & Check-out", "Bayphere Hotel, Jomtien", "2026-06-28T08:00:00+07:00", "2026-06-28T09:00:00+07:00", "walk", "🧳"),
+  act("act_d3_2", 3, "Pack & Check-out", "Bayphere Hotel, Jomtien", "2026-06-28T08:00:00+07:00", "2026-06-28T09:00:00+07:00", "walk", "🧳", "👔 Him: T-shirt\n👗 Her: Orange Skirt"),
   act("act_d3_3", 3, "South Pattaya Road 7-Eleven (Optional)", "Pattaya", "2026-06-28T09:00:00+07:00", "2026-06-28T10:00:00+07:00", "taxi", "🏪"),
   act("act_d3_4", 3, "Travel to Pattaya North Bus Terminal", "Pattaya", "2026-06-28T10:00:00+07:00", "2026-06-28T10:30:00+07:00", "taxi", "🚕"),
   act("act_d3_5", 3, "Bus Pattaya → Mo Chit", "Pattaya → Bangkok", "2026-06-28T11:00:00+07:00", "2026-06-28T13:30:00+07:00", "bus", "🚌"),
   act("act_d3_6", 3, "Check-in at Stay Hotel Bangkok", "Stay Hotel, Bangkok", "2026-06-28T14:00:00+07:00", "2026-06-28T14:30:00+07:00", "taxi", "🏨"),
-  act("act_d3_7", 3, "Chatuchak Weekend Market", "Chatuchak, Bangkok", "2026-06-28T14:30:00+07:00", "2026-06-28T18:30:00+07:00", "metro", "🛍️", "MRT Sutthisan → MRT Chatuchak Park\n\n🍽️ Must Try:\nCoconut Ice Cream\nThai Milk Tea\nMango Sticky Rice\nFruit Smoothies"),
+  act("act_d3_7", 3, "Chatuchak Weekend Market", "Chatuchak, Bangkok", "2026-06-28T14:30:00+07:00", "2026-06-28T18:30:00+07:00", "metro", "🛍️", "MRT Sutthisan → MRT Chatuchak Park\n\n👔 Him: Green T-shirt & Baggy Jeans\n👗 Her: Jean Pant + Onion Top + Tee\n\n🍽️ Must Try:\nCoconut Ice Cream\nThai Milk Tea\nMango Sticky Rice\nFruit Smoothies"),
   act("act_d3_8", 3, "Return to Hotel from Chatuchak", "Bangkok", "2026-06-28T18:30:00+07:00", "2026-06-28T19:00:00+07:00", "metro", "🚇", "MRT Chatuchak Park → MRT Sutthisan"),
   act("act_d3_9", 3, "Travel to Asiatique", "Bangkok", "2026-06-28T19:00:00+07:00", "2026-06-28T19:45:00+07:00", "metro", "🚇", "MRT Sutthisan → MRT Silom\nWalk to BTS Sala Daeng\nBTS Sala Daeng → BTS Saphan Taksin\nFree Boat → Asiatique"),
-  act("act_d3_10", 3, "Asiatique The Riverfront + Sky Flyer", "Charoen Krung, Bangkok", "2026-06-28T19:45:00+07:00", "2026-06-28T21:30:00+07:00", "walk", "🎡"),
+  act("act_d3_10", 3, "Asiatique The Riverfront + Sky Flyer", "Charoen Krung, Bangkok", "2026-06-28T19:45:00+07:00", "2026-06-28T21:30:00+07:00", "walk", "🎡", "👗 Her: White Midi Maxi OR Green Velvet Dress"),
   act("act_d3_11", 3, "Travel to Banthat Thong Road", "Bangkok", "2026-06-28T21:30:00+07:00", "2026-06-28T22:00:00+07:00", "taxi", "🚕"),
   act("act_d3_12", 3, "Dinner & Dessert at Banthat Thong Road", "Pathum Wan, Bangkok", "2026-06-28T22:00:00+07:00", "2026-06-28T23:00:00+07:00", "walk", "🍜", "⭐ Must Try:\nSeafood dishes\nButter Toast\nThai Milk Tea\nDesserts\nShrimp dishes"),
   act("act_d3_13", 3, "Return to Hotel", "Bangkok", "2026-06-28T23:00:00+07:00", "2026-06-28T23:30:00+07:00", "taxi", "🏨"),
 
   // ───────────────── Day 4 · Mon 29 Jun · Bangkok ─────────────────
-  act("act_d4_1", 4, "Breakfast", "Stay Hotel, Bangkok", "2026-06-29T08:00:00+07:00", "2026-06-29T09:00:00+07:00", "walk", "🍽️"),
+  act("act_d4_1", 4, "Breakfast", "Stay Hotel, Bangkok", "2026-06-29T08:00:00+07:00", "2026-06-29T09:00:00+07:00", "walk", "🍽️", "👔 Him: Beige Overcoat + White Tee + Blue Jeans\n👗 Her: Jean Skirt + White Top"),
   act("act_d4_2", 4, "Travel to Space & Time Cube+", "Bangkok", "2026-06-29T09:15:00+07:00", "2026-06-29T10:00:00+07:00", "metro", "🚇", "MRT Sutthisan → MRT Phasi Charoen"),
   act("act_d4_3", 4, "Space & Time Cube+", "Bangkok", "2026-06-29T10:00:00+07:00", "2026-06-29T11:30:00+07:00", "walk", "🌌"),
   act("act_d4_4", 4, "Travel to ICONSIAM", "Bangkok", "2026-06-29T11:30:00+07:00", "2026-06-29T12:30:00+07:00", "metro", "🚇", "MRT Phasi Charoen → MRT Silom\nBTS Sala Daeng → BTS Saphan Taksin\nBoat to ICONSIAM"),
@@ -112,7 +112,7 @@ export const seedActivities: Activity[] = [
   act("act_d4_10", 4, "Return to Hotel", "Bangkok", "2026-06-29T23:00:00+07:00", "2026-06-29T23:30:00+07:00", "taxi", "🏨"),
 
   // ──────────── Day 5 · Tue 30 Jun · Shopping & Departure ────────────
-  act("act_d5_1", 5, "Breakfast", "Stay Hotel, Bangkok", "2026-06-30T08:00:00+07:00", "2026-06-30T09:00:00+07:00", "walk", "🍽️"),
+  act("act_d5_1", 5, "Breakfast", "Stay Hotel, Bangkok", "2026-06-30T08:00:00+07:00", "2026-06-30T09:00:00+07:00", "walk", "🍽️", "👔 Him: White Full-hand Shirt\n👗 Her: Blue Maxi Dress"),
   act("act_d5_2", 5, "Platinum Fashion Mall", "Pratunam, Bangkok", "2026-06-30T09:30:00+07:00", "2026-06-30T12:00:00+07:00", "walk", "🛒"),
   act("act_d5_3", 5, "Lunch", "Bangkok", "2026-06-30T12:00:00+07:00", "2026-06-30T13:00:00+07:00", "walk", "🍽️"),
   act("act_d5_4", 5, "Indra Square Mall", "Ratchaprarop, Bangkok", "2026-06-30T13:00:00+07:00", "2026-06-30T14:30:00+07:00", "walk", "🏪"),
