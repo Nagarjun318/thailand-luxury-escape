@@ -224,6 +224,7 @@ export const seedExpenses: Expense[] = [
     title: "Airport SIM + data",
     category: "Misc",
     amountTHB: 299,
+    day: 1,
     date: "2026-06-26T05:10:00+07:00",
     notes: "AIS tourist SIM, 15GB.",
   },
@@ -232,6 +233,7 @@ export const seedExpenses: Expense[] = [
     title: "Breakfast – boat noodles",
     category: "Food",
     amountTHB: 180,
+    day: 1,
     date: "2026-06-26T12:30:00+07:00",
   },
   {
@@ -239,6 +241,7 @@ export const seedExpenses: Expense[] = [
     title: "Grab to Sanctuary of Truth",
     category: "Transport",
     amountTHB: 220,
+    day: 1,
     date: "2026-06-26T14:45:00+07:00",
   },
 ];

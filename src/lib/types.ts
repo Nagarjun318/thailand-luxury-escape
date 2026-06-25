@@ -44,6 +44,7 @@ export interface Expense {
   title: string;
   category: ExpenseCategory;
   amountTHB: number;
+  day: number; // 1-5
   date: string; // ISO datetime
   notes?: string;
 }

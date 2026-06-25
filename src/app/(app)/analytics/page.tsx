@@ -7,6 +7,8 @@ import {
   PolarAngleAxis,
   AreaChart,
   Area,
+  BarChart,
+  Bar,
   XAxis,
   YAxis,
   Tooltip,
@@ -20,6 +22,11 @@ import {
   ShoppingBag,
   ListChecks,
   TrendingUp,
+  UtensilsCrossed,
+  Car,
+  Ticket,
+  HelpCircle,
+  ShieldAlert,
 } from "lucide-react";
 import { useTripStore } from "@/lib/store";
 import { trip } from "@/lib/seed";
@@ -30,6 +37,7 @@ import {
   useMounted,
 } from "@/components/common";
 import { Card } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import { ProgressRing } from "@/components/progress-ring";
 import {
   formatTHB,
@@ -37,7 +45,9 @@ import {
   thbToInr,
   pct,
   formatDate,
+  cn,
 } from "@/lib/utils";
+import type { ExpenseCategory } from "@/lib/types";
 
 export default function AnalyticsPage() {
   const mounted = useMounted();
@@ -66,6 +76,8 @@ export default function AnalyticsPage() {
   ];
 
   const spendByDay = groupSpend(expenses);
+  const spendByCategory = groupByCategory(expenses);
+  const spendByTripDay = groupByTripDay(expenses);
 
   return (
     <>
@@ -174,6 +186,114 @@ export default function AnalyticsPage() {
       <FadeIn delay={0.15} className="mt-3">
         <Card className="p-5">
           <h3 className="mb-3 font-serif text-base font-semibold">
+            Category-wise Spending
+          </h3>
+          {spendByCategory.length === 0 ? (
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              No expenses recorded yet
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {spendByCategory.map((cat) => {
+                const Icon = categoryMeta[cat.category].icon;
+                const color = categoryMeta[cat.category].color;
+                return (
+                  <div key={cat.category}>
+                    <div className="mb-1.5 flex items-center justify-between text-sm">
+                      <span className="inline-flex items-center gap-2">
+                        <Icon className={cn("size-4", color)} />
+                        {cat.category}
+                      </span>
+                      <span className="font-medium">
+                        {formatTHB(cat.total)}
+                        <span className="ml-1 text-xs text-muted-foreground">
+                          ({cat.pct}%)
+                        </span>
+                      </span>
+                    </div>
+                    <Progress value={cat.pct} className="h-2" />
+                  </div>
+                );
+              })}
+              <div className="mt-2 flex items-center justify-between border-t border-white/10 pt-3 text-sm font-semibold">
+                <span>Total</span>
+                <span>{formatTHB(totalSpend)}</span>
+              </div>
+            </div>
+          )}
+        </Card>
+      </FadeIn>
+
+      <FadeIn delay={0.17} className="mt-3">
+        <Card className="p-5">
+          <h3 className="mb-3 font-serif text-base font-semibold">
+            Day-wise Spending
+          </h3>
+          {spendByTripDay.length === 0 ? (
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              No expenses recorded yet
+            </p>
+          ) : (
+            <>
+              <div className="mb-4 h-48">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={spendByTripDay} margin={{ left: -18, top: 8 }}>
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke="rgba(255,255,255,0.06)"
+                    />
+                    <XAxis
+                      dataKey="label"
+                      tick={{ fill: "#9ca3af", fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <YAxis
+                      tick={{ fill: "#9ca3af", fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={false}
+                    />
+                    <Tooltip
+                      content={({ active, payload }: any) =>
+                        active && payload?.length ? (
+                          <div className="rounded-lg border border-white/10 bg-[#161618] px-3 py-1.5 text-xs">
+                            <p className="font-medium">{payload[0].payload.label}</p>
+                            <p className="text-gold-300">
+                              {formatTHB(payload[0].value)}
+                            </p>
+                          </div>
+                        ) : null
+                      }
+                      cursor={{ fill: "rgba(212,175,55,0.08)" }}
+                    />
+                    <Bar
+                      dataKey="value"
+                      fill="#d4af37"
+                      radius={[6, 6, 0, 0]}
+                      maxBarSize={40}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="space-y-2">
+                {spendByTripDay.map((d) => (
+                  <div
+                    key={d.label}
+                    className="flex items-center justify-between text-sm"
+                  >
+                    <span className="text-muted-foreground">{d.label} · {d.place}</span>
+                    <span className="font-medium">{formatTHB(d.value)}</span>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </Card>
+      </FadeIn>
+
+      <FadeIn delay={0.2} className="mt-3">
+        <Card className="p-5">
+          <h3 className="mb-3 font-serif text-base font-semibold">
             Spending Trend
           </h3>
           {spendByDay.length === 0 ? (
@@ -243,4 +363,55 @@ function groupSpend(expenses: { date: string; amountTHB: number }[]) {
   return Array.from(map.entries())
     .map(([label, value]) => ({ label, value }))
     .reverse();
+}
+
+const categoryMeta: Record<
+  ExpenseCategory,
+  { icon: typeof Wallet; color: string }
+> = {
+  Food: { icon: UtensilsCrossed, color: "text-orange-400" },
+  Transport: { icon: Car, color: "text-blue-400" },
+  Shopping: { icon: ShoppingBag, color: "text-pink-400" },
+  Attractions: { icon: Ticket, color: "text-purple-400" },
+  Misc: { icon: HelpCircle, color: "text-gray-400" },
+  Emergency: { icon: ShieldAlert, color: "text-red-400" },
+};
+
+function groupByCategory(
+  expenses: { category: ExpenseCategory; amountTHB: number }[]
+) {
+  const map = new Map<ExpenseCategory, number>();
+  for (const e of expenses) {
+    map.set(e.category, (map.get(e.category) ?? 0) + e.amountTHB);
+  }
+  const total = expenses.reduce((s, e) => s + e.amountTHB, 0);
+  return Array.from(map.entries())
+    .map(([category, amount]) => ({
+      category,
+      total: amount,
+      pct: total > 0 ? Math.round((amount / total) * 100) : 0,
+    }))
+    .sort((a, b) => b.total - a.total);
+}
+
+const DAY_PLACES: Record<number, string> = {
+  1: "Pattaya",
+  2: "Pattaya",
+  3: "Bangkok",
+  4: "Bangkok",
+  5: "Bangkok",
+};
+
+function groupByTripDay(expenses: { day: number; amountTHB: number }[]) {
+  const map = new Map<number, number>();
+  for (const e of expenses) {
+    map.set(e.day, (map.get(e.day) ?? 0) + e.amountTHB);
+  }
+  return [1, 2, 3, 4, 5]
+    .filter((d) => map.has(d))
+    .map((d) => ({
+      label: `Day ${d}`,
+      place: DAY_PLACES[d],
+      value: map.get(d)!,
+    }));
 }

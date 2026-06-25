@@ -329,7 +329,7 @@ export default function BudgetPage() {
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{e.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      {e.category} · {formatDate(e.date)}
+                      {e.category} · Day {e.day} · {formatDate(e.date)}
                     </p>
                   </div>
                   <div className="text-right">
@@ -391,6 +391,7 @@ function ExpenseModal({
   const [title, setTitle] = React.useState("");
   const [amount, setAmount] = React.useState("");
   const [category, setCategory] = React.useState<ExpenseCategory>("Food");
+  const [day, setDay] = React.useState("1");
   const [notes, setNotes] = React.useState("");
 
   React.useEffect(() => {
@@ -398,6 +399,7 @@ function ExpenseModal({
       setTitle(editing?.title ?? "");
       setAmount(editing ? String(editing.amountTHB) : "");
       setCategory(editing?.category ?? "Food");
+      setDay(editing ? String(editing.day) : "1");
       setNotes(editing?.notes ?? "");
     }
   }, [open, editing]);
@@ -410,6 +412,7 @@ function ExpenseModal({
       title: title.trim(),
       amountTHB: amt,
       category,
+      day: Number(day),
       notes: notes.trim() || undefined,
       date: editing?.date ?? new Date().toISOString(),
     });
@@ -459,6 +462,16 @@ function ExpenseModal({
           </div>
         </div>
         <div className="space-y-1.5">
+          <Label>Day</Label>
+          <Select value={day} onChange={(e) => setDay(e.target.value)}>
+            <option value="1">Day 1 – 26 Jun (Pattaya)</option>
+            <option value="2">Day 2 – 27 Jun (Pattaya)</option>
+            <option value="3">Day 3 – 28 Jun (Bangkok)</option>
+            <option value="4">Day 4 – 29 Jun (Bangkok)</option>
+            <option value="5">Day 5 – 30 Jun (Bangkok)</option>
+          </Select>
+        </div>
+        <div className="space-y-1.5">
           <Label>Notes (optional)</Label>
           <Input
             value={notes}
@@ -491,15 +504,11 @@ function ChartTooltip({ active, payload }: any) {
 }
 
 function groupByDay(expenses: Expense[]) {
-  const map = new Map<string, number>();
+  const map = new Map<number, number>();
   for (const e of expenses) {
-    const key = new Date(e.date).toLocaleDateString("en-US", {
-      day: "numeric",
-      month: "short",
-    });
-    map.set(key, (map.get(key) ?? 0) + e.amountTHB);
+    map.set(e.day, (map.get(e.day) ?? 0) + e.amountTHB);
   }
   return Array.from(map.entries())
-    .map(([label, value]) => ({ label, value }))
-    .reverse();
+    .sort(([a], [b]) => a - b)
+    .map(([day, value]) => ({ label: `Day ${day}`, value }));
 }
